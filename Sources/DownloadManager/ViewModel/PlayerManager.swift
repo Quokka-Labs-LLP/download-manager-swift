@@ -1,5 +1,5 @@
 //
-//  File.swift
+//  PlayerManager.swift
 //  
 //
 //  Created by Abhishek Pandey on 30/08/23.
@@ -39,17 +39,19 @@ public class PlayerManager: ObservableObject {
         
     }
     
+    //MARK: Pause Media
     public func pauseMedia() {
         isPlay = false
         player?.pause()
-        
     }
     
+    // MARK: Resume Media
     public func resumeMedia() {
         player?.play()
         isPlay = true
     }
     
+    //MARK: Remove Player Current Item
     public func deinitPlayer() {
         player?.replaceCurrentItem(with: nil)
         player = nil
@@ -58,17 +60,13 @@ public class PlayerManager: ObservableObject {
     //MARK: - getMeidaPath
     func getMeidaPath(of url : String) -> URL?  {
         let docDir = URL(fileURLWithPath: NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)[0])
-        //guard let audioUrl = URL(string: url) else { return nil }
-        // let destinationUrl = docDir.appendingPathComponent(audioUrl.lastPathComponent)
         do {
             // List the contents of the directory
             let urlName = url.components(separatedBy: "/").last ?? ""
-            let contents = try FileManager.default.contentsOfDirectory(at: docDir, includingPropertiesForKeys: nil, options: [])
-            if let fileURL = contents.first(where: { $0.lastPathComponent.contains(urlName) }) {
+            let contents = try? FileManager.default.contentsOfDirectory(at: docDir, includingPropertiesForKeys: nil, options: [])
+            if let fileURL = contents?.first(where: { $0.lastPathComponent.contains(urlName) }) {
                 return fileURL
             }
-        } catch {
-            print("Error reading directory: \(error)")
         }
         return nil
     }

@@ -1,5 +1,5 @@
 //
-//  AudioDownloadTask.swift
+//  DownloadTask.swift
 //  
 //
 //  Created by Abhishek Pandey on 29/08/23.
@@ -25,7 +25,7 @@ public class DownloadTask: NSObject {
             dataTask = session?.downloadTask(with: audioUrl)
             dataTask?.resume()
         } else {
-            downloadAudioCallback?(.failure("InValid URL"))
+            downloadAudioCallback?(.failure(invalidURL))
         }
     }
     
@@ -81,7 +81,7 @@ extension DownloadTask {
         }
         
         catch let error as NSError {
-            downloadAudioCallback?(.failure("Unable to create directory \(error.debugDescription)"))
+            downloadAudioCallback?(.failure(dirErrorMsg(error.debugDescription)))
         }
         
     }
@@ -104,9 +104,9 @@ extension DownloadTask {
     //MARK: - triggerLocalNotification
     func triggerLocalNotification() {
         let content = UNMutableNotificationContent()
-        let mediaName = mediaURL.components(separatedBy: "/").last ?? "Media"
-        content.title = "Download"
-        content.subtitle = "\(mediaName) is downloaded"
+        let mediaName = mediaURL.components(separatedBy: "/").last ?? ""
+        content.title = notificationTitle
+        content.subtitle = notificationDescription(mediaName)
         content.sound = UNNotificationSound.default
         let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 1, repeats: false)
         let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: trigger)

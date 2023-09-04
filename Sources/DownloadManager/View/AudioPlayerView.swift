@@ -1,5 +1,5 @@
 //
-//  SwiftUIView.swift
+//  AudioPlayerView.swift
 //  
 //
 //  Created by Abhishek Pandey on 30/08/23.
@@ -18,12 +18,10 @@ public struct AudioPlayerView: View {
         GeometryReader {_ in
             VStack {
                 BackButtonView(player: player)
-                
                 Image(kAudioplayerImage)
                     .resizable()
-                    .frame(height: kFourHundred * screenWidthFactor)
-                    .cornerRadius(10)
-                    .padding(.horizontal, 20).padding(.top, 20)
+                    .frame(height: kFourHundred * screenWidthFactor).cornerRadius(10)
+                    .padding(.horizontal, kTwenty).padding(.top, kTwenty)
                 HStack{
                     VStack(alignment: .leading) {
                         let fileName = mediaUrl.components(separatedBy: "/")
@@ -31,7 +29,7 @@ public struct AudioPlayerView: View {
                         Text("\(player.currentDuration) / \(player.totalDuration)")
                     }
                     Spacer()
-                }.padding(.vertical, 20).padding(.horizontal,20)
+                }.padding(.vertical, kTwenty).padding(.horizontal,kTwenty)
                 Button {
                     if player.isPlay {
                         player.pauseMedia()
@@ -40,11 +38,9 @@ public struct AudioPlayerView: View {
                     }
                 } label: {
                     Image(player.isPlay ? kPause: kPlay)
-                        .resizable()
-                        .frame(width: 50, height: 50)
+                        .resizable().frame(width: kFifty, height: kFifty)
                     
-                }.padding(.top, 40 )
-                
+                }.padding(.top, kForty)
             }
         }.navigationBarBackButtonHidden(true)
             .onAppear {

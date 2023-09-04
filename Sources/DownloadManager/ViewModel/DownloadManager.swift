@@ -1,6 +1,11 @@
+//
+//  DownloadManager.swift
+//
+//
+//  Created by Abhishek Pandey on 29/08/23.
+//
 
 import Foundation
-import Combine
 import SwiftUI
 
 public class DownloadManager: ObservableObject {
@@ -10,6 +15,7 @@ public class DownloadManager: ObservableObject {
     private var downloadManager = DownloadTask()
     @Published public var taskResult: TaskResult = .progress(0.0)
     
+    //MARK: Initializer
     public init() {
         downloadManager.downloadAudioCallback = { [self] result in
             DispatchQueue.main.async {
