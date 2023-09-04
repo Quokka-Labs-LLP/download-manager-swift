@@ -14,7 +14,6 @@ public class PlayerManager: ObservableObject {
     
     //MARK: - Properties
     @Published var isPlay: Bool = false
-    // @Published var player: AVPlayer?
     @Published var totalDuration: String = "00:00"
     @Published var currentDuration: String = "00:00"
     
