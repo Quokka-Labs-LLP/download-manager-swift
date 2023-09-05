@@ -9,7 +9,7 @@ import SwiftUI
 import Combine
 import AVKit
 
-var player: AVPlayer?
+
 public class PlayerManager: ObservableObject {
     
     //MARK: - Properties
@@ -18,8 +18,8 @@ public class PlayerManager: ObservableObject {
     @Published var currentDuration: String = "00:00"
     
     
-    //MARK: - playMedia
-    public func playMedia(with url: String) {
+    //MARK: - Play Audio
+    public func playAudio(with url: String) {
         deinitPlayer()
         if let urlPath = getMeidaPath(of: url) {
             let asset = AVURLAsset(url: urlPath, options: nil)
@@ -39,14 +39,14 @@ public class PlayerManager: ObservableObject {
         
     }
     
-    //MARK: Pause Media
-    public func pauseMedia() {
+    //MARK: Pause Audio
+    public func pauseAudio() {
         isPlay = false
         player?.pause()
     }
     
-    // MARK: Resume Media
-    public func resumeMedia() {
+    // MARK: Resume Audio
+    public func resumeAudio() {
         player?.play()
         isPlay = true
     }
@@ -59,11 +59,11 @@ public class PlayerManager: ObservableObject {
     
     //MARK: - getMeidaPath
     func getMeidaPath(of url : String) -> URL?  {
-        let docDir = URL(fileURLWithPath: NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)[0])
+        let documentDirectory = URL(fileURLWithPath: NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)[0])
         do {
             // List the contents of the directory
             let urlName = url.components(separatedBy: "/").last ?? ""
-            let contents = try? FileManager.default.contentsOfDirectory(at: docDir, includingPropertiesForKeys: nil, options: [])
+            let contents = try? FileManager.default.contentsOfDirectory(at: documentDirectory, includingPropertiesForKeys: nil, options: [])
             if let fileURL = contents?.first(where: { $0.lastPathComponent.contains(urlName) }) {
                 return fileURL
             }
@@ -79,7 +79,7 @@ public class PlayerManager: ObservableObject {
         return(minutes, seconds)
     }
     
-    //MARK:  Play Videp
+    //MARK:  Play Video
     public func playVideo(url: String) {
         if let urlPath = getMeidaPath(of: url) {
             let videoAsset = AVURLAsset(url: urlPath, options: nil)

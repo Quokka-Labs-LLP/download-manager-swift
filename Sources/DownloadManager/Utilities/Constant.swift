@@ -7,6 +7,10 @@
 
 import Foundation
 import UIKit
+import AVKit
+
+
+var player: AVPlayer?  // This is used for single instance of AVPlayer
 
 let kAudioplayerImage = "playerImage"
 let kPlay = "play"

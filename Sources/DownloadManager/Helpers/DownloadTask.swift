@@ -59,13 +59,13 @@ extension DownloadTask {
     
     //MARK: -  Save Media File in DIR
     func saveAudioPath(with location: URL) {
-        let DocumentDirectory = URL(fileURLWithPath: NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)[0])
+        let documentDirectory = URL(fileURLWithPath: NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)[0])
         
         guard let audioUrl = URL(string: mediaURL) else { return }
-        let destinationUrl = DocumentDirectory.appendingPathComponent(audioUrl.lastPathComponent)
+        let destinationUrl = documentDirectory.appendingPathComponent(audioUrl.lastPathComponent)
         
         do {
-            try FileManager.default.createDirectory(atPath: DocumentDirectory.path, withIntermediateDirectories: true, attributes: nil)
+            try FileManager.default.createDirectory(atPath: documentDirectory.path, withIntermediateDirectories: true, attributes: nil)
             
             if FileManager.default.fileExists(atPath: destinationUrl.path){
                 // check this url is already exist or not
@@ -78,9 +78,8 @@ extension DownloadTask {
             } catch let error as NSError {
                 print(error.localizedDescription)
             }
-        }
-        
-        catch let error as NSError {
+        } catch let error as NSError {
+            //It will return the error when unable to move the content in document directory
             downloadAudioCallback?(.failure(dirErrorMsg(error.debugDescription)))
         }
         
@@ -88,9 +87,9 @@ extension DownloadTask {
     
     //MARK: - Remove Media
     func removeMedia(with url: String) {
-        let docDir = URL(fileURLWithPath: NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)[0])
+        let documentDirectory = URL(fileURLWithPath: NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)[0])
         guard let audioUrl = URL(string: url) else { return }
-        let destinationUrl = docDir.appendingPathComponent(audioUrl.lastPathComponent)
+        let destinationUrl = documentDirectory.appendingPathComponent(audioUrl.lastPathComponent)
         if FileManager.default.fileExists(atPath: destinationUrl.path) {
             try? FileManager.default.removeItem(at: destinationUrl)
             downloadAudioCallback?(.deleted(audioUrl))

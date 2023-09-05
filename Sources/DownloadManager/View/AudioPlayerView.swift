@@ -32,9 +32,9 @@ public struct AudioPlayerView: View {
                 }.padding(.vertical, kTwenty).padding(.horizontal,kTwenty)
                 Button {
                     if player.isPlay {
-                        player.pauseMedia()
+                        player.pauseAudio()
                     } else {
-                        player.resumeMedia()
+                        player.resumeAudio()
                     }
                 } label: {
                     Image(player.isPlay ? kPause: kPlay)
@@ -44,7 +44,7 @@ public struct AudioPlayerView: View {
             }
         }.navigationBarBackButtonHidden(true)
             .onAppear {
-                player.playMedia(with: mediaUrl)
+                player.playAudio(with: mediaUrl)
             }
         
     }
