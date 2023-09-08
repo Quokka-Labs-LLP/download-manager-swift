@@ -15,6 +15,7 @@ public class DownloadTask: NSObject {
     var dataTask:URLSessionDownloadTask?
     var mediaURL = ""
     var downloadAudioCallback: ((TaskResult) -> Void)?
+    var downloManager = DownloadManager()
     
     //MARK: Download Media
     public func downloadMedia(with url: String) {
@@ -73,7 +74,7 @@ extension DownloadTask {
             }
             do {
                 try FileManager.default.moveItem(at: location, to: destinationUrl)
-                triggerLocalNotification()
+                triggerLocalNotification(isRequire: downloManager.isNotificationEnable())
                 downloadAudioCallback?(.downloaded(destinationUrl))
             } catch let error as NSError {
                 print(error.localizedDescription)
@@ -101,14 +102,16 @@ extension DownloadTask {
 extension DownloadTask {
     
     //MARK: - triggerLocalNotification
-    func triggerLocalNotification() {
-        let content = UNMutableNotificationContent()
-        let mediaName = mediaURL.components(separatedBy: "/").last ?? ""
-        content.title = notificationTitle
-        content.subtitle = notificationDescription(mediaName)
-        content.sound = UNNotificationSound.default
-        let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 1, repeats: false)
-        let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: trigger)
-        UNUserNotificationCenter.current().add(request)
+    func triggerLocalNotification(isRequire: Bool) {
+        if isRequire {
+            let content = UNMutableNotificationContent()
+            let mediaName = mediaURL.components(separatedBy: "/").last ?? ""
+            content.title = notificationTitle
+            content.subtitle = notificationDescription(mediaName)
+            content.sound = UNNotificationSound.default
+            let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 1, repeats: false)
+            let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: trigger)
+            UNUserNotificationCenter.current().add(request)
+        }
     }
 }

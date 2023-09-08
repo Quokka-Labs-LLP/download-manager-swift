@@ -17,6 +17,7 @@ public class DownloadManager: ObservableObject {
     
     //MARK: Initializer
     public init() {
+        configNotification(isRequire: true)
         downloadManager.downloadAudioCallback = { [self] result in
             DispatchQueue.main.async {
                 self.taskResult = result
@@ -60,5 +61,16 @@ public class DownloadManager: ObservableObject {
         downloadManager.removeMedia(with: url)
     }
     
+    //MARK: Config toggle LocalNotification
+    // user can set the notification requirement
+    public func configNotification(isRequire: Bool) {
+        UserDefaults.standard.set(isRequire, forKey: localNotification)
+    }
+    
+    //MARK: isNotificationEnable
+    //Get notification status: is't enable or not?
+    public func isNotificationEnable() -> Bool {
+        return UserDefaults.standard.bool(forKey: localNotification)
+    }
     
 }
