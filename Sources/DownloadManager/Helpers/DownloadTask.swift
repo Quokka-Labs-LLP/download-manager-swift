@@ -15,7 +15,7 @@ public class DownloadTask: NSObject {
     var dataTask:URLSessionDownloadTask?
     var mediaURL = ""
     var downloadAudioCallback: ((TaskResult) -> Void)?
-    var downloManager = DownloadManager()
+    //var downloManager = DownloadManager()
     
     //MARK: Download Media
     public func downloadMedia(with url: String) {
@@ -74,7 +74,7 @@ extension DownloadTask {
             }
             do {
                 try FileManager.default.moveItem(at: location, to: destinationUrl)
-                triggerLocalNotification(isRequire: downloManager.isNotificationEnable())
+                triggerLocalNotification(isRequire: isNotificationEnable())
                 downloadAudioCallback?(.downloaded(destinationUrl))
             } catch let error as NSError {
                 print(error.localizedDescription)
@@ -113,5 +113,9 @@ extension DownloadTask {
             let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: trigger)
             UNUserNotificationCenter.current().add(request)
         }
+    }
+    
+    private func isNotificationEnable() -> Bool {
+        return UserDefaults.standard.bool(forKey: localNotification)
     }
 }
