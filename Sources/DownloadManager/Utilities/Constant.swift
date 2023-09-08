@@ -38,3 +38,4 @@ var dirErrorMsg = {(msg: String) in
 let invalidURL = "Invalid URL"
 
 
+let customCategoryIdentifier = "ProgressNotificationCategory"
