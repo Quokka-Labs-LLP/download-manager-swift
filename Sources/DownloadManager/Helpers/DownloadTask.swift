@@ -127,7 +127,7 @@ extension DownloadTask {
         content.title = "\(mediaName)"
         content.body = String(format: "%.1f%% complete", progress * 100)
         
-        let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 1, repeats: false)
+        let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 1, repeats: true)
         let request = UNNotificationRequest(identifier: "downloadProgress", content: content, trigger: trigger)
         
         UNUserNotificationCenter.current().add(request) { (error) in
