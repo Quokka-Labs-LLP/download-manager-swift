@@ -17,7 +17,7 @@ public class DownloadManager: ObservableObject {
     
     //MARK: Initializer
     public init() {
-        configNotification(isRequire: true)
+        //configNotification(isRequire: true)
         downloadManager.downloadAudioCallback = { [self] result in
             DispatchQueue.main.async {
                 self.taskResult = result
