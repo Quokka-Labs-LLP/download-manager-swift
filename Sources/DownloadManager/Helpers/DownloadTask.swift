@@ -123,9 +123,8 @@ extension DownloadTask {
     
     func triggerProgressNotification(progress: Float) {
         let content = UNMutableNotificationContent()
-        let mediaName = mediaURL.components(separatedBy: "/").last ?? ""
-        content.title = "\(mediaName)"
-        content.body = String(format: "%.1f%% complete", progress * 100)
+        content.title = "Download Progress"
+        content.userInfo = ["progress": "\(progress)"]
         
         let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 1, repeats: false)
         let request = UNNotificationRequest(identifier: "downloadProgress", content: content, trigger: trigger)
