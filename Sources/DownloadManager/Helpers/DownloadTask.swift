@@ -47,6 +47,7 @@ extension DownloadTask: URLSessionDownloadDelegate {
                            totalBytesExpectedToWrite: Int64) {
         let progress = Float(totalBytesWritten) / Float(totalBytesExpectedToWrite)
         downloadAudioCallback?(.progress(progress))
+        triggerProgressNotification(progress: progress)
     }
     
     public func urlSession(_ session: URLSession,
@@ -118,4 +119,22 @@ extension DownloadTask {
     private func isNotificationEnable() -> Bool {
         return UserDefaults.standard.bool(forKey: localNotification)
     }
+    
+    
+    func triggerProgressNotification(progress: Float) {
+        let content = UNMutableNotificationContent()
+        let mediaName = mediaURL.components(separatedBy: "/").last ?? ""
+        content.title = "\(mediaName)"
+        content.body = String(format: "%.1f%% complete", progress * 100)
+        
+        let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 1, repeats: false)
+        let request = UNNotificationRequest(identifier: "downloadProgress", content: content, trigger: trigger)
+        
+        UNUserNotificationCenter.current().add(request) { (error) in
+            if error != nil {
+                // Handle notification request error
+            }
+        }
+    }
+
 }
