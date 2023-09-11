@@ -28,9 +28,17 @@ let screenWidthFactor = UIScreen.main.bounds.width / 320
 
 //MARK: Message
 let notificationTitle  = "Download"
+let cancelMediaTitle = "Cancel"
+let failure = "Failure"
+
 var notificationDescription =  {(title: String) in
     return "\(title) is downloaded"
 }
+
+var cancelMediaSubtitle =  {(url: String) in
+    return "\(url) is cancel"
+}
+
 var dirErrorMsg = {(msg: String) in
     return ("Unable to create directory \(msg)")
 }

@@ -26,12 +26,18 @@ public class DownloadManager: ObservableObject {
     }
     
     //MARK: downloadAudio
-    public func downloadMedia(with url: String) {
+    public func downloadMedia(with url: String, successTitle: String = "", successSubtitle: String = "") {
+        let mediaName = url.components(separatedBy: "/").last ?? ""
+        downloadManager.successNotificationTitle = successTitle.isEmpty ? notificationTitle : successTitle
+        downloadManager.successNotifcationSubtitle  = successSubtitle.isEmpty ? notificationDescription(mediaName) : successSubtitle
         downloadManager.downloadMedia(with: url)
     }
     
     //MARK: cancelDownload
-    public func cancelDownload() {
+    public func cancelDownload(with url : String, notificationTitle: String = "", notificationSubtitle: String = "") {
+        let mediaName = url.components(separatedBy: "/").last ?? ""
+        downloadManager.cancelNotificationTitle = notificationTitle.isEmpty ? cancelMediaTitle  : notificationTitle
+        downloadManager.cancelNotificationSubtitle = notificationSubtitle.isEmpty ? cancelMediaSubtitle(mediaName) : notificationSubtitle
         downloadManager.cancelMedia()
     }
     

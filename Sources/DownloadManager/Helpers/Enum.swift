@@ -7,7 +7,7 @@
 
 import Foundation
 
-
+//MARK: Task states
 public enum TaskResult {
     case downloaded(URL)
     case progress(Float)

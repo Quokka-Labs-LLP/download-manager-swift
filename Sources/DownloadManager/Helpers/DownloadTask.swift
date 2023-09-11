@@ -14,12 +14,19 @@ public class DownloadTask: NSObject {
     var session:URLSession?
     var dataTask:URLSessionDownloadTask?
     var mediaURL = ""
+    var mediaName = ""
     var downloadAudioCallback: ((TaskResult) -> Void)?
+    var successNotificationTitle = ""
+    var successNotifcationSubtitle = ""
+    var cancelNotificationTitle = ""
+    var cancelNotificationSubtitle = ""
+    
     //var downloManager = DownloadManager()
     
     //MARK: Download Media
     public func downloadMedia(with url: String) {
         mediaURL = url
+        mediaName = mediaURL.components(separatedBy: "/").last ?? ""
         if let audioUrl = URL(string: mediaURL) {
             let configuration = URLSessionConfiguration.background(withIdentifier: url)
             session = Foundation.URLSession(configuration: configuration, delegate:self, delegateQueue: OperationQueue())
@@ -27,6 +34,7 @@ public class DownloadTask: NSObject {
             dataTask?.resume()
         } else {
             downloadAudioCallback?(.failure(invalidURL))
+            triggerLocalNotification(title: failure, subtitle: invalidURL)
         }
     }
     
@@ -34,6 +42,7 @@ public class DownloadTask: NSObject {
     func cancelMedia() {
         dataTask?.cancel()
         downloadAudioCallback?(.cancel)
+        triggerLocalNotification(title: cancelNotificationTitle, subtitle: cancelNotificationSubtitle)
     }
     
 }
@@ -47,7 +56,7 @@ extension DownloadTask: URLSessionDownloadDelegate {
                            totalBytesExpectedToWrite: Int64) {
         let progress = Float(totalBytesWritten) / Float(totalBytesExpectedToWrite)
         downloadAudioCallback?(.progress(progress))
-       // triggerProgressNotification(progress: progress)
+        // triggerProgressNotification(progress: progress)
     }
     
     public func urlSession(_ session: URLSession,
@@ -75,7 +84,7 @@ extension DownloadTask {
             }
             do {
                 try FileManager.default.moveItem(at: location, to: destinationUrl)
-                triggerLocalNotification(isRequire: isNotificationEnable())
+                triggerLocalNotification(title: successNotificationTitle, subtitle: successNotifcationSubtitle)
                 downloadAudioCallback?(.downloaded(destinationUrl))
             } catch let error as NSError {
                 print(error.localizedDescription)
@@ -83,6 +92,7 @@ extension DownloadTask {
         } catch let error as NSError {
             //It will return the error when unable to move the content in document directory
             downloadAudioCallback?(.failure(dirErrorMsg(error.debugDescription)))
+            triggerLocalNotification(title: failure, subtitle: dirErrorMsg(error.debugDescription))
         }
         
     }
@@ -103,12 +113,11 @@ extension DownloadTask {
 extension DownloadTask {
     
     //MARK: - triggerLocalNotification
-    func triggerLocalNotification(isRequire: Bool) {
-        if isRequire {
+    func triggerLocalNotification(title: String, subtitle: String) {
+        if isNotificationEnable() {
             let content = UNMutableNotificationContent()
-            let mediaName = mediaURL.components(separatedBy: "/").last ?? ""
-            content.title = notificationTitle
-            content.subtitle = notificationDescription(mediaName)
+            content.title = title
+            content.subtitle = subtitle//notificationDescription(mediaName)
             content.sound = UNNotificationSound.default
             let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 1, repeats: false)
             let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: trigger)
@@ -120,22 +129,4 @@ extension DownloadTask {
         return UserDefaults.standard.bool(forKey: localNotification)
     }
     
-    
-//    func triggerProgressNotification(progress: Float) {
-//        let content = UNMutableNotificationContent()
-//        content.title = "Your Notification Title"
-//        content.body = "Your Notification Body"
-//        content.categoryIdentifier = customCategoryIdentifier // Set the custom category identifier
-//        // ... other content setup ...
-//
-//        let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 1, repeats: false)
-//        let request = UNNotificationRequest(identifier: "uniqueIdentifier", content: content, trigger: trigger)
-//
-//        UNUserNotificationCenter.current().add(request) { error in
-//            if let error = error {
-//                // Handle error
-//            }
-//        }
-//    }
-
 }
