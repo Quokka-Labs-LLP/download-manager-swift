@@ -27,7 +27,8 @@ public class DownloadTask: NSObject {
     public func downloadMedia(with url: String) {
         mediaURL = url
         mediaName = mediaURL.components(separatedBy: "/").last ?? ""
-        if let audioUrl = URL(string: mediaURL) {
+        
+        if isURLValid(mediaURL), let audioUrl = URL(string: mediaURL) {
             let configuration = URLSessionConfiguration.background(withIdentifier: url)
             session = Foundation.URLSession(configuration: configuration, delegate:self, delegateQueue: OperationQueue())
             dataTask = session?.downloadTask(with: audioUrl)
@@ -152,4 +153,24 @@ extension DownloadTask {
         return UserDefaults.standard.bool(forKey: localNotification)
     }
     
+    //MARK: - URL Validation
+    func isURLValid(_ urlString: String) -> Bool {
+        if let url = URL(string: urlString) {
+            if url.scheme == "http" || url.scheme == "https" {
+                let request = URLRequest(url: url, cachePolicy: .reloadIgnoringLocalAndRemoteCacheData, timeoutInterval: 10.0)
+                let semaphore = DispatchSemaphore(value: 0)
+                URLSession.shared.dataTask(with: request) { (_, response, error) in
+                    if let httpResponse = response as? HTTPURLResponse {
+                        if 200...299 ~= httpResponse.statusCode {
+                            semaphore.signal()
+                            return
+                        }
+                    }
+                    semaphore.signal()
+                }.resume()
+                return semaphore.wait(timeout: .now() + 10.0) == .success
+            }
+        }
+        return false
+    }
 }
