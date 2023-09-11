@@ -32,18 +32,7 @@ public class DownloadTask: NSObject {
         if let audioUrl = URL(string: mediaURL) {
             let configuration = URLSessionConfiguration.background(withIdentifier: url)
             session = Foundation.URLSession(configuration: configuration, delegate:self, delegateQueue: OperationQueue())
-            dataTask = session?.downloadTask(with: audioUrl){ (url, response, error) in
-                if let error = error as? URLError {
-                    if error.code == .notConnectedToInternet {
-                        print("No internet connection.")
-                    } else {
-                        print("Download error: \(error.localizedDescription)")
-                    }
-                } else if let url = url {
-                    // Handle the downloaded file
-                    print("Downloaded file URL: \(url)")
-                }
-            }
+            dataTask = session?.downloadTask(with: audioUrl)
             dataTask?.resume()
         } else {
             downloadAudioCallback?(.failure(invalidURL))
@@ -94,33 +83,33 @@ extension DownloadTask: URLSessionDownloadDelegate, URLSessionDelegate {
                            didFinishDownloadingTo location: URL) {
         saveAudioPath(with: location)
     }
-
+    
     public func urlSession(_ session: URLSession, didBecomeInvalidWithError error: Error?) {
         downloadAudioCallback?(.failure(error?.localizedDescription ?? kNetwork))
         triggerLocalNotification(title: failure, subtitle: (error?.localizedDescription ?? kNetwork))
     }
     
     public func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?) {
-            if let error = error {
-                if let nsError = error as NSError?, nsError.domain == NSURLErrorDomain {
-                    // Check the error code to determine the specific network error
-                    switch nsError.code {
-                    case NSURLErrorCancelled:
-                        break
-                    case NSURLErrorNotConnectedToInternet:
-                        // Handle no internet connection
-                        downloadAudioCallback?(.failure(kNetwork))
-                        triggerLocalNotification(title: failure, subtitle: (kNetwork))
-                    case NSURLErrorTimedOut:
-                        downloadAudioCallback?(.failure(kRequestMsg))
-                        triggerLocalNotification(title: failure, subtitle: (kRequestMsg))
-                    default:
-                        downloadAudioCallback?(.failure(nsError.localizedDescription))
-                        triggerLocalNotification(title: failure, subtitle: (nsError.localizedDescription))
-                    }
+        if let error = error {
+            if let nsError = error as NSError?, nsError.domain == NSURLErrorDomain {
+                // Check the error code to determine the specific network error
+                switch nsError.code {
+                case NSURLErrorCancelled:
+                    break
+                case NSURLErrorNotConnectedToInternet:
+                    // Handle no internet connection
+                    downloadAudioCallback?(.failure(kNetwork))
+                    triggerLocalNotification(title: failure, subtitle: (kNetwork))
+                case NSURLErrorTimedOut:
+                    downloadAudioCallback?(.failure(kRequestMsg))
+                    triggerLocalNotification(title: failure, subtitle: (kRequestMsg))
+                default:
+                    downloadAudioCallback?(.failure(nsError.localizedDescription))
+                    triggerLocalNotification(title: failure, subtitle: (nsError.localizedDescription))
                 }
             }
         }
+    }
 }
 
 extension DownloadTask {
