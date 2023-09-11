@@ -64,6 +64,16 @@ extension DownloadTask: URLSessionDownloadDelegate {
                            didFinishDownloadingTo location: URL) {
         saveAudioPath(with: location)
     }
+
+    public func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?) {
+        downloadAudioCallback?(.failure(dirErrorMsg(error.debugDescription)))
+        triggerLocalNotification(title: failure, subtitle: dirErrorMsg(error.debugDescription))
+        
+    }
+    public func urlSession(_ session: URLSession, didBecomeInvalidWithError error: Error?) {
+        downloadAudioCallback?(.failure(dirErrorMsg(error.debugDescription)))
+        triggerLocalNotification(title: failure, subtitle: dirErrorMsg(error.debugDescription))
+    }
 }
 
 extension DownloadTask {
