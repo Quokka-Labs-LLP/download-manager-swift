@@ -84,7 +84,8 @@ extension DownloadTask: URLSessionDownloadDelegate {
                         downloadAudioCallback?(.failure(kRequestMsg))
                         triggerLocalNotification(title: failure, subtitle: (kRequestMsg))
                     default:
-                        break
+                        downloadAudioCallback?(.failure(nsError.localizedDescription))
+                        triggerLocalNotification(title: failure, subtitle: (nsError.localizedDescription))
                     }
                 }
             }
@@ -173,4 +174,5 @@ extension DownloadTask {
         }
         return false
     }
+    
 }
