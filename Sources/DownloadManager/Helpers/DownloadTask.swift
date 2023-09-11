@@ -65,14 +65,9 @@ extension DownloadTask: URLSessionDownloadDelegate {
         saveAudioPath(with: location)
     }
 
-    public func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?) {
-        downloadAudioCallback?(.failure(dirErrorMsg(error.debugDescription)))
-        triggerLocalNotification(title: failure, subtitle: dirErrorMsg(error.debugDescription))
-        
-    }
     public func urlSession(_ session: URLSession, didBecomeInvalidWithError error: Error?) {
-        downloadAudioCallback?(.failure(dirErrorMsg(error.debugDescription)))
-        triggerLocalNotification(title: failure, subtitle: dirErrorMsg(error.debugDescription))
+        downloadAudioCallback?(.failure(error?.localizedDescription ?? kNetwork))
+        triggerLocalNotification(title: failure, subtitle: (error?.localizedDescription ?? kNetwork))
     }
 }
 
@@ -100,9 +95,8 @@ extension DownloadTask {
                 print(error.localizedDescription)
             }
         } catch let error as NSError {
-            //It will return the error when unable to move the content in document directory
-            downloadAudioCallback?(.failure(dirErrorMsg(error.debugDescription)))
-            triggerLocalNotification(title: failure, subtitle: dirErrorMsg(error.debugDescription))
+            downloadAudioCallback?(.failure(dirErrorMsg(error.localizedDescription)))
+            triggerLocalNotification(title: failure, subtitle: dirErrorMsg(error.localizedDescription))
         }
         
     }
