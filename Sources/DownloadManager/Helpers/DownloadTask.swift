@@ -28,7 +28,7 @@ public class DownloadTask: NSObject {
         mediaURL = url
         mediaName = mediaURL.components(separatedBy: "/").last ?? ""
         
-        if isURLValid(mediaURL), let audioUrl = URL(string: mediaURL) {
+        if let audioUrl = URL(string: mediaURL) {
             let configuration = URLSessionConfiguration.background(withIdentifier: url)
             session = Foundation.URLSession(configuration: configuration, delegate:self, delegateQueue: OperationQueue())
             dataTask = session?.downloadTask(with: audioUrl)
@@ -49,7 +49,7 @@ public class DownloadTask: NSObject {
 }
 
 //MARK: - URLSessionDownloadDelegate
-extension DownloadTask: URLSessionDownloadDelegate {
+extension DownloadTask: URLSessionDownloadDelegate, URLSessionDelegate {
     public func urlSession(_ session: URLSession,
                            downloadTask: URLSessionDownloadTask,
                            didWriteData bytesWritten: Int64,
