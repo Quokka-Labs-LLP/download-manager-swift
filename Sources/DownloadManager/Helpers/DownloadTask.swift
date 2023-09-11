@@ -69,6 +69,25 @@ extension DownloadTask: URLSessionDownloadDelegate {
         downloadAudioCallback?(.failure(error?.localizedDescription ?? kNetwork))
         triggerLocalNotification(title: failure, subtitle: (error?.localizedDescription ?? kNetwork))
     }
+    
+    public func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?) {
+            if let error = error {
+                if let nsError = error as NSError?, nsError.domain == NSURLErrorDomain {
+                    // Check the error code to determine the specific network error
+                    switch nsError.code {
+                    case NSURLErrorNotConnectedToInternet:
+                        // Handle no internet connection
+                        downloadAudioCallback?(.failure(kNetwork))
+                        triggerLocalNotification(title: failure, subtitle: (kNetwork))
+                    case NSURLErrorTimedOut:
+                        downloadAudioCallback?(.failure(kRequestMsg))
+                        triggerLocalNotification(title: failure, subtitle: (kRequestMsg))
+                    default:
+                        break
+                    }
+                }
+            }
+        }
 }
 
 extension DownloadTask {

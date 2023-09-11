@@ -46,3 +46,4 @@ var dirErrorMsg = {(msg: String) in
 let invalidURL = "Invalid URL"
 let customCategoryIdentifier = "ProgressNotificationCategory"
 let kNetwork = "Network Error"
+let kRequestMsg = "Request timed out"
