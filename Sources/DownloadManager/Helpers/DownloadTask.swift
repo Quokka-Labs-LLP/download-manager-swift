@@ -47,7 +47,7 @@ extension DownloadTask: URLSessionDownloadDelegate {
                            totalBytesExpectedToWrite: Int64) {
         let progress = Float(totalBytesWritten) / Float(totalBytesExpectedToWrite)
         downloadAudioCallback?(.progress(progress))
-        triggerProgressNotification(progress: progress)
+       // triggerProgressNotification(progress: progress)
     }
     
     public func urlSession(_ session: URLSession,
@@ -121,21 +121,21 @@ extension DownloadTask {
     }
     
     
-    func triggerProgressNotification(progress: Float) {
-        let content = UNMutableNotificationContent()
-        content.title = "Your Notification Title"
-        content.body = "Your Notification Body"
-        content.categoryIdentifier = customCategoryIdentifier // Set the custom category identifier
-        // ... other content setup ...
-
-        let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 1, repeats: false)
-        let request = UNNotificationRequest(identifier: "uniqueIdentifier", content: content, trigger: trigger)
-
-        UNUserNotificationCenter.current().add(request) { error in
-            if let error = error {
-                // Handle error
-            }
-        }
-    }
+//    func triggerProgressNotification(progress: Float) {
+//        let content = UNMutableNotificationContent()
+//        content.title = "Your Notification Title"
+//        content.body = "Your Notification Body"
+//        content.categoryIdentifier = customCategoryIdentifier // Set the custom category identifier
+//        // ... other content setup ...
+//
+//        let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 1, repeats: false)
+//        let request = UNNotificationRequest(identifier: "uniqueIdentifier", content: content, trigger: trigger)
+//
+//        UNUserNotificationCenter.current().add(request) { error in
+//            if let error = error {
+//                // Handle error
+//            }
+//        }
+//    }
 
 }
