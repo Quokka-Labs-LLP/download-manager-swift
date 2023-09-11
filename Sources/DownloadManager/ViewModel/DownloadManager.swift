@@ -41,6 +41,16 @@ public class DownloadManager: ObservableObject {
         downloadManager.cancelMedia()
     }
     
+    //MARK: - pauseDownload
+    public func pauseDownload() {
+        downloadManager.pauseDownload()
+    }
+    
+    //MARK: - resumeDownload
+    public func resumeDownload() {
+        downloadManager.resumeDownload()
+    }
+    
     // MARK: - openAudioPlayer
     public func openAudioPlayer(with url: String) -> some View {
         playerManager.deinitPlayer()

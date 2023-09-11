@@ -8,6 +8,7 @@
 import Foundation
 import UserNotifications
 
+
 public class DownloadTask: NSObject {
     
     //MARK: - Properties
@@ -20,8 +21,8 @@ public class DownloadTask: NSObject {
     var successNotifcationSubtitle = ""
     var cancelNotificationTitle = ""
     var cancelNotificationSubtitle = ""
+    var resumeData: Data?
     
-    //var downloManager = DownloadManager()
     
     //MARK: Download Media
     public func downloadMedia(with url: String) {
@@ -31,7 +32,18 @@ public class DownloadTask: NSObject {
         if let audioUrl = URL(string: mediaURL) {
             let configuration = URLSessionConfiguration.background(withIdentifier: url)
             session = Foundation.URLSession(configuration: configuration, delegate:self, delegateQueue: OperationQueue())
-            dataTask = session?.downloadTask(with: audioUrl)
+            dataTask = session?.downloadTask(with: audioUrl){ (url, response, error) in
+                if let error = error as? URLError {
+                    if error.code == .notConnectedToInternet {
+                        print("No internet connection.")
+                    } else {
+                        print("Download error: \(error.localizedDescription)")
+                    }
+                } else if let url = url {
+                    // Handle the downloaded file
+                    print("Downloaded file URL: \(url)")
+                }
+            }
             dataTask?.resume()
         } else {
             downloadAudioCallback?(.failure(invalidURL))
@@ -46,6 +58,24 @@ public class DownloadTask: NSObject {
         triggerLocalNotification(title: cancelNotificationTitle, subtitle: cancelNotificationSubtitle)
     }
     
+    //MARK: - pauseDownload
+    func pauseDownload() {
+        dataTask?.cancel { (data) in
+            if let data = data {
+                self.resumeData = data
+            }
+        }
+    }
+    
+    //MARK: - pauseDownload
+    func resumeDownload() {
+        if let resumedData = resumeData {
+            dataTask = session?.downloadTask(withResumeData: resumedData)
+            dataTask?.resume()
+            self.resumeData = nil
+        }
+    }
+    
 }
 
 //MARK: - URLSessionDownloadDelegate
@@ -57,7 +87,6 @@ extension DownloadTask: URLSessionDownloadDelegate, URLSessionDelegate {
                            totalBytesExpectedToWrite: Int64) {
         let progress = Float(totalBytesWritten) / Float(totalBytesExpectedToWrite)
         downloadAudioCallback?(.progress(progress))
-        // triggerProgressNotification(progress: progress)
     }
     
     public func urlSession(_ session: URLSession,
