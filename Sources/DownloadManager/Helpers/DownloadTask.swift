@@ -76,6 +76,8 @@ extension DownloadTask: URLSessionDownloadDelegate, URLSessionDelegate {
                 if let nsError = error as NSError?, nsError.domain == NSURLErrorDomain {
                     // Check the error code to determine the specific network error
                     switch nsError.code {
+                    case NSURLErrorCancelled:
+                        break
                     case NSURLErrorNotConnectedToInternet:
                         // Handle no internet connection
                         downloadAudioCallback?(.failure(kNetwork))
