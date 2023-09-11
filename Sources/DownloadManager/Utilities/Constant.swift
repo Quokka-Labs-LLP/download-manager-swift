@@ -27,16 +27,16 @@ let screenHeightFactor = UIScreen.main.bounds.height / 568
 let screenWidthFactor = UIScreen.main.bounds.width / 320
 
 //MARK: Message
-let notificationTitle  = "Download"
-let cancelMediaTitle = "Cancel"
-let failure = "Failure"
+let notificationTitle  = "Notification"
+let cancelMediaTitle = "Notification"
+let failure = "Notification"
 
 var notificationDescription =  {(title: String) in
     return "\(title) is downloaded"
 }
 
 var cancelMediaSubtitle =  {(url: String) in
-    return "\(url) is cancel"
+    return "Cancel \(url)!"
 }
 
 var dirErrorMsg = {(msg: String) in
