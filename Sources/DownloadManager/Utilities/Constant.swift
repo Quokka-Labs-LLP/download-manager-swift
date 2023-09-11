@@ -32,7 +32,7 @@ let cancelMediaTitle = "Notification"
 let failure = "Notification"
 
 var notificationDescription =  {(title: String) in
-    return "\(title) is downloaded"
+    return "Downloaded \(title)"
 }
 
 var cancelMediaSubtitle =  {(url: String) in
