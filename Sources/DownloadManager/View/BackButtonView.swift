@@ -17,14 +17,13 @@ struct BackButtonView: View {
     var body: some View {
         HStack{
             Button {
+                dismiss()
+                player.deinitPlayer()
             } label: {
                 Image(kBack)
                     .resizable().aspectRatio(contentMode: .fit)
                     .frame(width: kTwenty * screenWidthFactor, height: kTwenty * screenWidthFactor)
-                    .padding(.leading, 20).onTapGesture {
-                        dismiss()
-                        player.deinitPlayer()
-                    }
+                    .padding(.leading, kTwenty)
             }
             Spacer()
         }

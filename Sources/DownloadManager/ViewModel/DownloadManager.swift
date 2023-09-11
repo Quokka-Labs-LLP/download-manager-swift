@@ -11,7 +11,7 @@ import SwiftUI
 public class DownloadManager: ObservableObject {
     
     //MARK: - properties
-    var playerManager = PlayerManager()
+    let playerManager = PlayerManager()
     private var downloadManager = DownloadTask()
     @Published public var taskResult: TaskResult = .progress(0.0)
     
@@ -27,18 +27,25 @@ public class DownloadManager: ObservableObject {
     
     //MARK: downloadAudio
     public func downloadMedia(with url: String, successTitle: String = "", successSubtitle: String = "") {
-        let mediaName = url.components(separatedBy: "/").last ?? ""
-        downloadManager.successNotificationTitle = successTitle.isEmpty ? notificationTitle : successTitle
-        downloadManager.successNotifcationSubtitle  = successSubtitle.isEmpty ? notificationDescription(mediaName) : successSubtitle
+        if let mediaName = url.components(separatedBy: "/").last {
+            downloadManager.successNotificationTitle = successTitle.isEmpty ? notificationTitle : successTitle
+            downloadManager.successNotifcationSubtitle  = successSubtitle.isEmpty ? notificationDescription(mediaName) : successSubtitle
+        } else {
+            debugPrint(kMediaNameError)
+        }
         downloadManager.downloadMedia(with: url)
     }
     
     //MARK: cancelDownload
     public func cancelDownload(with url : String, notificationTitle: String = "", notificationSubtitle: String = "") {
-        let mediaName = url.components(separatedBy: "/").last ?? ""
-        downloadManager.cancelNotificationTitle = notificationTitle.isEmpty ? cancelMediaTitle  : notificationTitle
-        downloadManager.cancelNotificationSubtitle = notificationSubtitle.isEmpty ? cancelMediaSubtitle(mediaName) : notificationSubtitle
+        if let mediaName = url.components(separatedBy: "/").last {
+            downloadManager.cancelNotificationTitle = notificationTitle.isEmpty ? cancelMediaTitle  : notificationTitle
+            downloadManager.cancelNotificationSubtitle = notificationSubtitle.isEmpty ? cancelMediaSubtitle(mediaName) : notificationSubtitle
+        } else {
+            debugPrint(kMediaNameError)
+        }
         downloadManager.cancelMedia()
+        
     }
     
     //MARK: - pauseDownload
@@ -65,7 +72,7 @@ public class DownloadManager: ObservableObject {
     //MARK: - isMediaExistInDir
     // check media is already download or not
     public func isMediaExistInDir(with url : String) -> Bool {
-        if let _ =  playerManager.getMeidaPath(of: url) {
+        if (playerManager.getMeidaPath(of: url) != nil) {
             return true
         } else {
             return false

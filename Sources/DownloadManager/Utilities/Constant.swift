@@ -16,6 +16,8 @@ let kAudioplayerImage = "playerImage"
 let kPlay = "play"
 let kPause = "pause"
 let kBack = "back"
+let kHttp  = "http"
+let kHttps = "https"
 
 let kFourHundred = 300.0
 let kFifty = 50.0
@@ -48,3 +50,4 @@ let customCategoryIdentifier = "ProgressNotificationCategory"
 let kNetwork = "Network Error"
 let kRequestMsg = "Request timed out"
 let kSpaceRealatedIssue = "Unable to retrieve free space information"
+let kMediaNameError  = "Media name is nil."

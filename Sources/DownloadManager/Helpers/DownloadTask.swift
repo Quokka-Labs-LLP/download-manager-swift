@@ -116,40 +116,44 @@ extension DownloadTask {
     
     //MARK: -  Save Media File in DIR
     func saveAudioPath(with location: URL) {
-        let documentDirectory = URL(fileURLWithPath: NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)[0])
-        
-        guard let audioUrl = URL(string: mediaURL) else { return }
-        let destinationUrl = documentDirectory.appendingPathComponent(audioUrl.lastPathComponent)
-        
-        do {
-            try FileManager.default.createDirectory(atPath: documentDirectory.path, withIntermediateDirectories: true, attributes: nil)
+        if let searchPathDirectries = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true).first {
+            let documentDirectory = URL(fileURLWithPath: searchPathDirectries)
+            guard let audioUrl = URL(string: mediaURL) else { return }
+            let destinationUrl = documentDirectory.appendingPathComponent(audioUrl.lastPathComponent)
             
-            if FileManager.default.fileExists(atPath: destinationUrl.path){
-                // check this url is already exist or not
-                try? FileManager.default.removeItem(at: destinationUrl)
-            }
             do {
-                try FileManager.default.moveItem(at: location, to: destinationUrl)
-                triggerLocalNotification(title: successNotificationTitle, subtitle: successNotifcationSubtitle)
-                downloadAudioCallback?(.downloaded(destinationUrl))
+                try FileManager.default.createDirectory(atPath: documentDirectory.path, withIntermediateDirectories: true, attributes: nil)
+                
+                if FileManager.default.fileExists(atPath: destinationUrl.path){
+                    // check this url is already exist or not
+                    try? FileManager.default.removeItem(at: destinationUrl)
+                }
+                do {
+                    try FileManager.default.moveItem(at: location, to: destinationUrl)
+                    triggerLocalNotification(title: successNotificationTitle, subtitle: successNotifcationSubtitle)
+                    downloadAudioCallback?(.downloaded(destinationUrl))
+                } catch let error as NSError {
+                    print(error.localizedDescription)
+                }
             } catch let error as NSError {
-                print(error.localizedDescription)
+                downloadAudioCallback?(.failure(dirErrorMsg(error.localizedDescription)))
+                triggerLocalNotification(title: failure, subtitle: dirErrorMsg(error.localizedDescription))
             }
-        } catch let error as NSError {
-            downloadAudioCallback?(.failure(dirErrorMsg(error.localizedDescription)))
-            triggerLocalNotification(title: failure, subtitle: dirErrorMsg(error.localizedDescription))
         }
         
     }
     
     //MARK: - Remove Media
     func removeMedia(with url: String) {
-        let documentDirectory = URL(fileURLWithPath: NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)[0])
-        guard let audioUrl = URL(string: url) else { return }
-        let destinationUrl = documentDirectory.appendingPathComponent(audioUrl.lastPathComponent)
-        if FileManager.default.fileExists(atPath: destinationUrl.path) {
-            try? FileManager.default.removeItem(at: destinationUrl)
-            downloadAudioCallback?(.deleted(audioUrl))
+        if let searchPathDirectries = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true).first {
+            let documentDirectory = URL(fileURLWithPath: searchPathDirectries)
+            if let audioUrl = URL(string: url) {
+                let destinationUrl = documentDirectory.appendingPathComponent(audioUrl.lastPathComponent)
+                if FileManager.default.fileExists(atPath: destinationUrl.path) {
+                    try? FileManager.default.removeItem(at: destinationUrl)
+                    downloadAudioCallback?(.deleted(audioUrl))
+                }
+            }
         }
     }
 }
@@ -162,7 +166,7 @@ extension DownloadTask {
         if isNotificationEnable() {
             let content = UNMutableNotificationContent()
             content.title = title
-            content.subtitle = subtitle//notificationDescription(mediaName)
+            content.subtitle = subtitle
             content.sound = UNNotificationSound.default
             let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 1, repeats: false)
             let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: trigger)
@@ -172,27 +176,6 @@ extension DownloadTask {
     
     private func isNotificationEnable() -> Bool {
         return UserDefaults.standard.bool(forKey: localNotification)
-    }
-    
-    //MARK: - URL Validation
-    func isURLValid(_ urlString: String) -> Bool {
-        if let url = URL(string: urlString) {
-            if url.scheme == "http" || url.scheme == "https" {
-                let request = URLRequest(url: url, cachePolicy: .reloadIgnoringLocalAndRemoteCacheData, timeoutInterval: 10.0)
-                let semaphore = DispatchSemaphore(value: 0)
-                URLSession.shared.dataTask(with: request) { (_, response, error) in
-                    if let httpResponse = response as? HTTPURLResponse {
-                        if 200...299 ~= httpResponse.statusCode {
-                            semaphore.signal()
-                            return
-                        }
-                    }
-                    semaphore.signal()
-                }.resume()
-                return semaphore.wait(timeout: .now() + 10.0) == .success
-            }
-        }
-        return false
     }
     
 }
