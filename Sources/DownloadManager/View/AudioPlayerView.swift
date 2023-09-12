@@ -19,8 +19,7 @@ public struct AudioPlayerView: View {
         GeometryReader {_ in
             VStack {
                 BackButtonView(player: player)
-                Image(kAudioplayerImage)
-                    .resizable()
+                Image(kAudioplayerImage).resizable()
                     .frame(height: kFourHundred * screenWidthFactor).cornerRadius(10)
                     .padding(.horizontal, kTwenty).padding(.top, kTwenty)
                 HStack{
@@ -33,7 +32,7 @@ public struct AudioPlayerView: View {
                     }
                     Spacer()
                 }.padding(.vertical, kTwenty).padding(.horizontal,kTwenty)
-                setSliderConfig()
+                setSliderConfig().padding(.horizontal, kTwenty)
                 HStack(spacing: kThirty) {
                     buttonConfig(with: .backward)
                     buttonPlay()
@@ -79,6 +78,7 @@ public struct AudioPlayerView: View {
         }
     }
     
+    //MARK: setSliderConfig
     private func setSliderConfig() -> some View {
         Group {
             Slider(value: $player.currentDuration, in: 0...player.totalDuration)
@@ -88,6 +88,7 @@ public struct AudioPlayerView: View {
         }
     }
     
+    //MARK: getAudioPlayDuration
     private func getAudioPlayDuration() -> String {
         let playerCurrentTime = player.currentDuration.getSecondInTime()
         let playerTotalDuration = player.totalDuration.getSecondInTime()

@@ -27,18 +27,13 @@ public class PlayerManager: ObservableObject {
             let playerItem = AVPlayerItem(asset: asset)
             player = AVPlayer.init(playerItem: playerItem)
             totalDuration = CMTimeGetSeconds(asset.duration)
-            //let durationTime = getTime(with: asset.duration)
-           // totalDuration = "\(durationTime.0) : \(durationTime.1)"
             let interval = CMTime(seconds: 1.0, preferredTimescale: CMTimeScale(NSEC_PER_SEC))
             player?.addPeriodicTimeObserver(forInterval: interval, queue: .main) { time in
                 self.currentDuration = CMTimeGetSeconds(time)
-
             }
-            
             player?.play()
             isPlay = true
         }
-        
     }
     
     //MARK: Pause Audio
@@ -61,13 +56,15 @@ public class PlayerManager: ObservableObject {
     
     //MARK: - getMeidaPath
     func getMeidaPath(of url : String) -> URL?  {
-        let documentDirectory = URL(fileURLWithPath: NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)[0])
-        do {
-            // List the contents of the directory
-            let urlName = url.components(separatedBy: "/").last ?? ""
-            let contents = try? FileManager.default.contentsOfDirectory(at: documentDirectory, includingPropertiesForKeys: nil, options: [])
-            if let fileURL = contents?.first(where: { $0.lastPathComponent.contains(urlName) }) {
-                return fileURL
+        if let searchPathDirectory = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true).first {
+            let documentDirectory = URL(fileURLWithPath:searchPathDirectory)
+            do {
+                // List the contents of the directory
+                let urlName = url.components(separatedBy: "/").last ?? ""
+                let contents = try? FileManager.default.contentsOfDirectory(at: documentDirectory, includingPropertiesForKeys: nil, options: [])
+                if let fileURL = contents?.first(where: { $0.lastPathComponent.contains(urlName) }) {
+                    return fileURL
+                }
             }
         }
         return nil
@@ -88,11 +85,10 @@ public class PlayerManager: ObservableObject {
                 }
             }
         }
-        
     }
     
     //MARK: - Forward interval
-   public func skipForward() {
+    public func skipForward() {
         if player == nil { return }
         if let duration = player?.currentItem?.duration {
             if let currentTime = player?.currentTime(){
@@ -107,9 +103,9 @@ public class PlayerManager: ObservableObject {
             }
         }
     }
-
+    
     //MARK: - Backward interval
-  public func skipBackward() {
+    public func skipBackward() {
         if player == nil { return }
         if let currentTime = player?.currentTime() {
             let playerCurrentTime = CMTimeGetSeconds(currentTime)
@@ -123,6 +119,7 @@ public class PlayerManager: ObservableObject {
         }
     }
     
+    //MARK: Change audio player seek with slider
     public func updateSeek(with value: Double) {
         let selectedTime: CMTime = CMTimeMake(value: Int64(value * 1000 as Float64), timescale: 1000)
         player?.seek(to: selectedTime)
