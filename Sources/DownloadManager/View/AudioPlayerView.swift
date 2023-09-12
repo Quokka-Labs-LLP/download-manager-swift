@@ -33,7 +33,7 @@ public struct AudioPlayerView: View {
                     }
                     Spacer()
                 }.padding(.vertical, kTwenty).padding(.horizontal,kTwenty)
-                
+                setSliderConfig()
                 HStack(spacing: kThirty) {
                     buttonConfig(with: .backward)
                     buttonPlay()
