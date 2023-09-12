@@ -26,7 +26,6 @@ public struct AudioPlayerView: View {
                     VStack(alignment: .leading) {
                         if let fileName = mediaUrl.components(separatedBy: "/").last {
                             Text(fileName).padding(.vertical, 5)
-                            
                             Text(getAudioPlayDuration())
                         }
                     }
@@ -47,17 +46,16 @@ public struct AudioPlayerView: View {
     }
     
     //MARK: ButtonConfig - For forward and backward time interval
+    @ViewBuilder
     private func buttonConfig(with intervalType: AudioIntervalType) -> some View {
-        Group {
-            Button {
-                if intervalType == .forward {
-                    player.skipForward()
-                } else {
-                    player.skipBackward()
-                }
-            } label: {
-                Image(intervalType.rawValue).resizable().frame(width: kThirty, height: kThirty)
+        Button {
+            if intervalType == .forward {
+                player.skipForward()
+            } else {
+                player.skipBackward()
             }
+        } label: {
+            Image(intervalType.rawValue).resizable().frame(width: kThirty, height: kThirty)
         }
     }
     
@@ -73,19 +71,16 @@ public struct AudioPlayerView: View {
             } label: {
                 Image(player.isPlay ? kPause: kPlay)
                     .resizable().frame(width: kFifty, height: kFifty)
-                
-            }
-        }
+            }}
     }
     
     //MARK: setSliderConfig
+    @ViewBuilder
     private func setSliderConfig() -> some View {
-        Group {
-            Slider(value: $player.currentDuration, in: 0...player.totalDuration)
-                .onChange(of: player.currentDuration) { newValue in
-                    player.updateSeek(with: newValue)
-                }
-        }
+        Slider(value: $player.currentDuration, in: 0...player.totalDuration)
+            .onChange(of: player.currentDuration) { newValue in
+                player.updateSeek(with: newValue)
+            }
     }
     
     //MARK: getAudioPlayDuration
