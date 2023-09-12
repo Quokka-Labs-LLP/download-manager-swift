@@ -16,6 +16,7 @@ public class PlayerManager: ObservableObject {
     @Published var isPlay: Bool = false
     @Published var totalDuration: String = "00:00"
     @Published var currentDuration: String = "00:00"
+    public var audioTimeInterval: Float64 = 30
     
     
     //MARK: - Play Audio
@@ -95,5 +96,37 @@ public class PlayerManager: ObservableObject {
             }
         }
         
+    }
+    
+    //MARK: - Forward interval
+   public func skipForward() {
+        if player == nil { return }
+        if let duration = player?.currentItem?.duration {
+            if let currentTime = player?.currentTime(){
+                let playerCurrentTime = CMTimeGetSeconds(currentTime)
+                let newTime = playerCurrentTime + audioTimeInterval
+                if newTime < CMTimeGetSeconds(duration) {
+                    let selectedTime = CMTimeMake(value: Int64(newTime * 1000 as Float64), timescale: 1000)
+                    player?.seek(to: selectedTime)
+                    player?.pause()
+                    player?.play()
+                }
+            }
+        }
+    }
+
+    //MARK: - Backward interval
+  public func skipBackward() {
+        if player == nil { return }
+        if let currentTime = player?.currentTime() {
+            let playerCurrentTime = CMTimeGetSeconds(currentTime)
+            let newTime = playerCurrentTime - audioTimeInterval
+            if newTime >= 0 {
+                let selectedTime: CMTime = CMTimeMake(value: Int64(newTime * 1000 as Float64), timescale: 1000)
+                player?.seek(to: selectedTime)
+            }
+            player?.pause()
+            player?.play()
+        }
     }
 }

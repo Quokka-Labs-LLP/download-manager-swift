@@ -24,22 +24,17 @@ public struct AudioPlayerView: View {
                     .padding(.horizontal, kTwenty).padding(.top, kTwenty)
                 HStack{
                     VStack(alignment: .leading) {
-                        let fileName = mediaUrl.components(separatedBy: "/")
-                        Text(fileName.last ?? "").padding(.vertical, 5)
-                        Text("\(player.currentDuration) / \(player.totalDuration)")
+                        if let fileName = mediaUrl.components(separatedBy: "/").last {
+                            Text(fileName).padding(.vertical, 5)
+                            Text("\(player.currentDuration) / \(player.totalDuration)")
+                        }
                     }
                     Spacer()
                 }.padding(.vertical, kTwenty).padding(.horizontal,kTwenty)
-                Button {
-                    if player.isPlay {
-                        player.pauseAudio()
-                    } else {
-                        player.resumeAudio()
-                    }
-                } label: {
-                    Image(player.isPlay ? kPause: kPlay)
-                        .resizable().frame(width: kFifty, height: kFifty)
-                    
+                HStack(spacing: kThirty) {
+                    buttonConfig(with: .backward)
+                    buttonPlay()
+                    buttonConfig(with: .forward)
                 }.padding(.top, kForty)
             }
         }.navigationBarBackButtonHidden(true)
@@ -48,6 +43,40 @@ public struct AudioPlayerView: View {
             }
         
     }
+    
+    //MARK: ButtonConfig - For forward and backward time interval
+    private func buttonConfig(with intervalType: AudioIntervalType) -> some View {
+        Group {
+            Button {
+                if intervalType == .forward {
+                    player.skipForward()
+                } else {
+                    player.skipBackward()
+                }
+            } label: {
+                Image(intervalType.rawValue).resizable().frame(width: kThirty, height: kThirty)
+            }
+        }
+    }
+    
+    //MARK: Audio play / pause action helper
+    private func buttonPlay() -> some View {
+        Group {
+            Button {
+                if player.isPlay {
+                    player.pauseAudio()
+                } else {
+                    player.resumeAudio()
+                }
+            } label: {
+                Image(player.isPlay ? kPause: kPlay)
+                    .resizable().frame(width: kFifty, height: kFifty)
+                
+            }
+        }
+    }
+    
+    
 }
 
 

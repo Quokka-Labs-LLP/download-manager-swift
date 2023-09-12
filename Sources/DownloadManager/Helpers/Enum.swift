@@ -14,5 +14,9 @@ public enum TaskResult {
     case failure(String)
     case cancel
     case deleted(URL)
+}
 
+public enum AudioIntervalType: String {
+    case forward
+    case backward
 }
