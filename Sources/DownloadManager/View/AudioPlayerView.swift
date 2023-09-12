@@ -12,6 +12,7 @@ public struct AudioPlayerView: View {
     //MARK: - Properties
     @StateObject var player = PlayerManager()
     public var mediaUrl = ""
+    @State private var currentDuration: Double = 0.0
     
     //MARK: - body
     public var body: some View {
@@ -26,11 +27,13 @@ public struct AudioPlayerView: View {
                     VStack(alignment: .leading) {
                         if let fileName = mediaUrl.components(separatedBy: "/").last {
                             Text(fileName).padding(.vertical, 5)
-                            Text("\(player.currentDuration) / \(player.totalDuration)")
+                            
+                            Text(getAudioPlayDuration())
                         }
                     }
                     Spacer()
                 }.padding(.vertical, kTwenty).padding(.horizontal,kTwenty)
+                
                 HStack(spacing: kThirty) {
                     buttonConfig(with: .backward)
                     buttonPlay()
@@ -76,7 +79,20 @@ public struct AudioPlayerView: View {
         }
     }
     
+    private func setSliderConfig() -> some View {
+        Group {
+            Slider(value: $player.currentDuration, in: 0...player.totalDuration)
+                .onChange(of: player.currentDuration) { newValue in
+                    player.updateSeek(with: newValue)
+                }
+        }
+    }
     
+    private func getAudioPlayDuration() -> String {
+        let playerCurrentTime = player.currentDuration.getSecondInTime()
+        let playerTotalDuration = player.totalDuration.getSecondInTime()
+        return "\(playerCurrentTime.0) : \(playerCurrentTime.1) / \(playerTotalDuration.0) : \(playerTotalDuration.1) "
+    }
 }
 
 

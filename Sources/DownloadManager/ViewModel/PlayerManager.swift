@@ -14,8 +14,8 @@ public class PlayerManager: ObservableObject {
     
     //MARK: - Properties
     @Published var isPlay: Bool = false
-    @Published var totalDuration: String = "00:00"
-    @Published var currentDuration: String = "00:00"
+    @Published var totalDuration: Double = 0.0
+    @Published var currentDuration: Double = 0.0
     public var audioTimeInterval: Float64 = 30
     
     
@@ -26,12 +26,13 @@ public class PlayerManager: ObservableObject {
             let asset = AVURLAsset(url: urlPath, options: nil)
             let playerItem = AVPlayerItem(asset: asset)
             player = AVPlayer.init(playerItem: playerItem)
-            let durationTime = getTime(with: asset.duration)
-            totalDuration = "\(durationTime.0) : \(durationTime.1)"
+            totalDuration = CMTimeGetSeconds(asset.duration)
+            //let durationTime = getTime(with: asset.duration)
+           // totalDuration = "\(durationTime.0) : \(durationTime.1)"
             let interval = CMTime(seconds: 1.0, preferredTimescale: CMTimeScale(NSEC_PER_SEC))
             player?.addPeriodicTimeObserver(forInterval: interval, queue: .main) { time in
-                let currentTime = self.getTime(with: time)
-                self.currentDuration = "\(currentTime.0) : \(currentTime.1)"
+                self.currentDuration = CMTimeGetSeconds(time)
+
             }
             
             player?.play()
@@ -70,14 +71,6 @@ public class PlayerManager: ObservableObject {
             }
         }
         return nil
-    }
-    
-    //MARK: getTime
-    func getTime(with time: CMTime) -> (Int, Int) {
-        let totalSeconds = CMTimeGetSeconds(time)
-        let minutes = Int(totalSeconds) / 60
-        let seconds = Int(totalSeconds) % 60
-        return(minutes, seconds)
     }
     
     //MARK:  Play Video
@@ -128,5 +121,10 @@ public class PlayerManager: ObservableObject {
             player?.pause()
             player?.play()
         }
+    }
+    
+    public func updateSeek(with value: Double) {
+        let selectedTime: CMTime = CMTimeMake(value: Int64(value * 1000 as Float64), timescale: 1000)
+        player?.seek(to: selectedTime)
     }
 }
