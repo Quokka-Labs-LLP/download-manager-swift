@@ -2,8 +2,6 @@
 
 `DownloadManager` and `PlayerManager` are Swift classes designed to manage media downloads and playback, respectively. These classes can be used in SwiftUI-based applications to handle media-related tasks. This README provides an overview of their features and usage.
 
-## DownloadManager
-
 ## Features
 
 ### DownloadManager
@@ -112,8 +110,8 @@ To use the Media Management Library in your project, follow these steps:
 
 
 ## Requirements
-**iOS 14.0+**
-**Swift 5.0+**
+- **iOS 14.0+**
+- **Swift 5.0+**
 
 
 
