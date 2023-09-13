@@ -40,82 +40,75 @@ To use the Media Management Library in your project, follow these steps:
 ### Usage of Download Manager:
 
 - Create an instance of DownloadManager in your SwiftUI view.
-`@StateObject var downloadManager = DownloadManager()`
+- `@StateObject var downloadManager = DownloadManager()`
 
 - Download media from a URL
-`downloadManager.downloadMedia(with: "your_media_file_url")`
+- `downloadManager.downloadMedia(with: "your_media_file_url")`
 
 - Pause a download
-`downloadManager.pauseDownload()`
+- `downloadManager.pauseDownload()`
 
 - Resume a paused download
-`downloadManager.resumeDownload()`
+- `downloadManager.resumeDownload()`
 
 - Cancel a download
-`downloadManager.cancelDownload(with: "your_media_file_url")`
+- `downloadManager.cancelDownload(with: "your_media_file_url")`
 
 - Check if media is already downloaded
-`let isMediaDownloaded = downloadManager.isMediaExistInDir(with: "your_media_file_url")`
+- `let isMediaDownloaded = downloadManager.isMediaExistInDir(with: "your_media_file_url")`
 
 - Remove downloaded media file
-`downloadManager.removeMediaFromDir(with: "your_media_file_url")`
+- `downloadManager.removeMediaFromDir(with: "your_media_file_url")`
 
 - Enable or disable notifications
-`downloadManager.configNotification(isRequire: true)`
+- `downloadManager.configNotification(isRequire: true)`
 
 - Check if notifications are enabled
-`let isNotificationsEnabled = downloadManager.isNotificationEnable()`
+- `let isNotificationsEnabled = downloadManager.isNotificationEnable()`
 
 ### Usage of Player Manager:
 
 - Import PlayerManager into your SwiftUI view.
-`import PlayerManager`
+- `import PlayerManager`
 
 - Create an instance of PlayerManager in your SwiftUI view.
-`@StateObject var playerManager = PlayerManager()`
+- `@StateObject var playerManager = PlayerManager()`
 
 - Play audio from a URL
-`playerManager.playAudio(with: "your_audio_file_url")`
+- `playerManager.playAudio(with: "your_audio_file_url")`
 
 - Play video from a URL
-`playerManager.playVideo(url: "your_video_file_url")`
+- `playerManager.playVideo(url: "your_video_file_url")`
 
 - Pause playback
-`playerManager.pauseAudio()`
+- `playerManager.pauseAudio()`
 
 - Resume playback
-`playerManager.resumeAudio()`
+- `playerManager.resumeAudio()`
 
 - Skip forward and backward
-`playerManager.skipForward()`
+- `playerManager.skipForward()`
 `playerManager.skipBackward()`
 
 - Seek playback using a slider value
-`playerManager.updateSeek(with: 0.5)`
+- `playerManager.updateSeek(with: 0.5)`
 
 - Check if media is currently playing
-`let isPlaying = playerManager.isPlay`
+- `let isPlaying = playerManager.isPlay`
 
 - Access the total duration of the media
-`let totalDuration = playerManager.totalDuration`
+- `let totalDuration = playerManager.totalDuration`
 
 - Access the current playback duration
-`let currentDuration = playerManager.currentDuration`
+- `let currentDuration = playerManager.currentDuration`
 
 - Open an audio player for media playback
-`let audioPlayerView = playerManager.openAudioPlayer(with: "your_audio_file_url")`
+- `let audioPlayerView = playerManager.openAudioPlayer(with: "your_audio_file_url")`
 
 - Open a video player for media playback
-`playerManager.openVideoPlayer(with: "your_video_file_url")`
+- `playerManager.openVideoPlayer(with: "your_video_file_url")`
 
 
 ## Requirements
 - **iOS 14.0+**
 - **Swift 5.0+**
-
-
-
-
-
-
-
