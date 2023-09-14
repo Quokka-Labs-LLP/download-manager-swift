@@ -18,7 +18,10 @@ public class PlayerManager: ObservableObject {
     @Published public var currentDuration: Double = 0.0
     public var audioTimeInterval: Float64 = 30
     
-    
+    //MARK: - Intializer
+    public init() {
+
+        }
     //MARK: - Play Audio
     public func playAudio(with url: String) {
         deinitPlayer()
