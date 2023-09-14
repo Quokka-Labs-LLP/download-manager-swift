@@ -17,7 +17,6 @@ public class DownloadManager: ObservableObject {
     
     //MARK: Initializer
     public init() {
-        //configNotification(isRequire: true)
         downloadManager.downloadAudioCallback = { [self] result in
             DispatchQueue.main.async {
                 self.taskResult = result
@@ -58,21 +57,12 @@ public class DownloadManager: ObservableObject {
         downloadManager.resumeDownload()
     }
     
-    // MARK: - openAudioPlayer
-    public func openAudioPlayer(with url: String) -> some View {
-        playerManager.deinitPlayer()
-        return AudioPlayerView(mediaUrl: url)
-    }
     
-    public func openVideoPlayer(with url: String) {
-        playerManager.deinitPlayer()
-        playerManager.playVideo(url: url)
-    }
     
     //MARK: - isMediaExistInDir
     // check media is already download or not
     public func isMediaExistInDir(with url : String) -> Bool {
-        if (playerManager.getMeidaPath(of: url) != nil) {
+        if (playerManager.getMediaPath(of: url) != nil) {
             return true
         } else {
             return false

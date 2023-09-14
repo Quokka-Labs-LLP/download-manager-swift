@@ -21,11 +21,6 @@ let kBack = "back"
 let kHttp  = "http"
 let kHttps = "https"
 
-let kFourHundred = 300.0
-let kFifty = 50.0
-let kTwenty = 20.0
-let kForty = 40.0
-let kThirty = 30.0
 let localNotification = "NotificationStatus"
 
 let screenHeightFactor = UIScreen.main.bounds.height / 568

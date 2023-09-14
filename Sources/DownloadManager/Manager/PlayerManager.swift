@@ -19,13 +19,13 @@ public class PlayerManager: ObservableObject {
     public var audioTimeInterval: Float64 = 30
     
     //MARK: - Intializer
-//    public init() {
-//
-//        }
+    public init() {
+
+        }
     //MARK: - Play Audio
     public func playAudio(with url: String) {
         deinitPlayer()
-        if let urlPath = getMeidaPath(of: url) {
+        if let urlPath = getMediaPath(of: url) {
             let asset = AVURLAsset(url: urlPath, options: nil)
             let playerItem = AVPlayerItem(asset: asset)
             player = AVPlayer.init(playerItem: playerItem)
@@ -58,7 +58,7 @@ public class PlayerManager: ObservableObject {
     }
     
     //MARK: - getMeidaPath
-    public func getMeidaPath(of url : String) -> URL?  {
+    public func getMediaPath(of url : String) -> URL?  {
         if let searchPathDirectory = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true).first {
             let documentDirectory = URL(fileURLWithPath:searchPathDirectory)
             do {
@@ -75,7 +75,7 @@ public class PlayerManager: ObservableObject {
     
     //MARK:  Play Video
     public func playVideo(url: String) {
-        if let urlPath = getMeidaPath(of: url) {
+        if let urlPath = getMediaPath(of: url) {
             let videoAsset = AVURLAsset(url: urlPath, options: nil)
             let videoPlayerItem = AVPlayerItem(asset: videoAsset)
             let player = AVPlayer(playerItem: videoPlayerItem)

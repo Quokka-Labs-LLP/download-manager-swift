@@ -9,7 +9,7 @@ import Foundation
 import UserNotifications
 
 
-public class DownloadTask: NSObject {
+class DownloadTask: NSObject {
     
     //MARK: - Properties
     var session:URLSession?
@@ -25,7 +25,7 @@ public class DownloadTask: NSObject {
     
     
     //MARK: Download Media
-    public func downloadMedia(with url: String) {
+    func downloadMedia(with url: String) {
         mediaURL = url
         mediaName = mediaURL.components(separatedBy: "/").last ?? ""
         
@@ -69,27 +69,27 @@ public class DownloadTask: NSObject {
 
 //MARK: - URLSessionDownloadDelegate
 extension DownloadTask: URLSessionDownloadDelegate, URLSessionDelegate {
-    public func urlSession(_ session: URLSession,
-                           downloadTask: URLSessionDownloadTask,
-                           didWriteData bytesWritten: Int64,
-                           totalBytesWritten: Int64,
-                           totalBytesExpectedToWrite: Int64) {
+    func urlSession(_ session: URLSession,
+                    downloadTask: URLSessionDownloadTask,
+                    didWriteData bytesWritten: Int64,
+                    totalBytesWritten: Int64,
+                    totalBytesExpectedToWrite: Int64) {
         let progress = Float(totalBytesWritten) / Float(totalBytesExpectedToWrite)
         downloadAudioCallback?(.progress(progress))
     }
     
-    public func urlSession(_ session: URLSession,
-                           downloadTask: URLSessionDownloadTask,
-                           didFinishDownloadingTo location: URL) {
+    func urlSession(_ session: URLSession,
+                    downloadTask: URLSessionDownloadTask,
+                    didFinishDownloadingTo location: URL) {
         saveAudioPath(with: location)
     }
     
-    public func urlSession(_ session: URLSession, didBecomeInvalidWithError error: Error?) {
+    func urlSession(_ session: URLSession, didBecomeInvalidWithError error: Error?) {
         downloadAudioCallback?(.failure(error?.localizedDescription ?? kNetwork))
         triggerLocalNotification(title: failure, subtitle: (error?.localizedDescription ?? kNetwork))
     }
     
-    public func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?) {
+    func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?) {
         if let error = error {
             if let nsError = error as NSError?, nsError.domain == NSURLErrorDomain {
                 // Check the error code to determine the specific network error

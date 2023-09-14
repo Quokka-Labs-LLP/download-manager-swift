@@ -6,6 +6,7 @@
 
 ### DownloadManager
 
+- Download multiple files asynchronously.
 - Download media files from a given URL.
 - Pause and resume ongoing downloads.
 - Cancel ongoing downloads.
@@ -39,74 +40,74 @@ To use the Media Management Library in your project, follow these steps:
 
 ### Usage of Download Manager:
 
-- Create an instance of DownloadManager in your SwiftUI view.
-- `@StateObject var downloadManager = DownloadManager()`
+- Create an instance of DownloadManager in your SwiftUI view\
+  `@StateObject var downloadManager = DownloadManager()`
 
-- Download media from a URL
-- `downloadManager.downloadMedia(with: "your_media_file_url")`
+- Download media from a URL\
+  `downloadManager.downloadMedia(with: "your_media_file_url")`
 
-- Pause a download
-- `downloadManager.pauseDownload()`
+- Pause a download\
+  `downloadManager.pauseDownload()`
 
-- Resume a paused download
-- `downloadManager.resumeDownload()`
+- Resume a paused download\
+ `downloadManager.resumeDownload()`
 
-- Cancel a download
-- `downloadManager.cancelDownload(with: "your_media_file_url")`
+- Cancel a download\
+  `downloadManager.cancelDownload(with: "your_media_file_url")`
 
-- Check if media is already downloaded
-- `let isMediaDownloaded = downloadManager.isMediaExistInDir(with: "your_media_file_url")`
+- Check if media is already downloaded\
+  `let isMediaDownloaded = downloadManager.isMediaExistInDir(with: "your_media_file_url")`
 
-- Remove downloaded media file
-- `downloadManager.removeMediaFromDir(with: "your_media_file_url")`
+- Remove downloaded media file\
+  `downloadManager.removeMediaFromDir(with: "your_media_file_url")`
 
-- Enable or disable notifications
-- `downloadManager.configNotification(isRequire: true)`
+- Enable or disable notifications\
+ `downloadManager.configNotification(isRequire: true)`
 
-- Check if notifications are enabled
-- `let isNotificationsEnabled = downloadManager.isNotificationEnable()`
+- Check if notifications are enabled\
+ `let isNotificationsEnabled = downloadManager.isNotificationEnable()`
 
 ### Usage of Player Manager:
 
-- Import PlayerManager into your SwiftUI view.
-- `import PlayerManager`
+- Import PlayerManager into your SwiftUI view\
+ `import PlayerManager`
 
-- Create an instance of PlayerManager in your SwiftUI view.
-- `@StateObject var playerManager = PlayerManager()`
+- Create an instance of PlayerManager in your SwiftUI view\
+  `@StateObject var playerManager = PlayerManager()`
 
-- Play audio from a URL
-- `playerManager.playAudio(with: "your_audio_file_url")`
+- Play audio from a URL\
+ `playerManager.playAudio(with: "your_audio_file_url")`
 
-- Play video from a URL
-- `playerManager.playVideo(url: "your_video_file_url")`
+- Play video from a URL\
+ `playerManager.playVideo(url: "your_video_file_url")`
 
-- Pause playback
-- `playerManager.pauseAudio()`
+- Pause playback\
+ `playerManager.pauseAudio()`
 
-- Resume playback
-- `playerManager.resumeAudio()`
+- Resume playback\
+ `playerManager.resumeAudio()`
 
-- Skip forward and backward
-- `playerManager.skipForward()`
+- Skip forward and backward\
+`playerManager.skipForward()`\
 `playerManager.skipBackward()`
 
-- Seek playback using a slider value
-- `playerManager.updateSeek(with: 0.5)`
+- Seek playback using a slider value\
+`playerManager.updateSeek(with: 0.5)`
 
-- Check if media is currently playing
-- `let isPlaying = playerManager.isPlay`
+- Check if media is currently playing\
+ `let isPlaying = playerManager.isPlay`
 
-- Access the total duration of the media
-- `let totalDuration = playerManager.totalDuration`
+- Access the total duration of the media\
+ `let totalDuration = playerManager.totalDuration`
 
-- Access the current playback duration
-- `let currentDuration = playerManager.currentDuration`
+- Access the current playback duration\
+ `let currentDuration = playerManager.currentDuration`
 
-- Open an audio player for media playback
-- `let audioPlayerView = playerManager.openAudioPlayer(with: "your_audio_file_url")`
+- Open an audio player for media playback\
+  `let audioPlayerView = playerManager.openAudioPlayer(with: "your_audio_file_url")`
 
-- Open a video player for media playback
-- `playerManager.openVideoPlayer(with: "your_video_file_url")`
+- Open a video player for media playback\
+  `playerManager.openVideoPlayer(with: "your_video_file_url")`
 
 
 ## Requirements
