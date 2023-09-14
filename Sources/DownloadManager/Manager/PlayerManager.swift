@@ -13,7 +13,7 @@ import AVKit
 public class PlayerManager: ObservableObject {
     
     //MARK: - Properties
-    @Published public var isPlay: Bool = false
+    @Published public var isPlaying: Bool = false
     @Published public var totalDuration: Double = 0.0
     @Published public var currentDuration: Double = 0.0
     public var audioTimeInterval: Float64 = 30
@@ -35,20 +35,20 @@ public class PlayerManager: ObservableObject {
                 self.currentDuration = CMTimeGetSeconds(time)
             }
             player?.play()
-            isPlay = true
+            isPlaying = true
         }
     }
     
     //MARK: Pause Audio
     public func pauseAudio() {
-        isPlay = false
+        isPlaying = false
         player?.pause()
     }
     
     // MARK: Resume Audio
     public func resumeAudio() {
         player?.play()
-        isPlay = true
+        isPlaying = true
     }
     
     //MARK: Remove Player Current Item

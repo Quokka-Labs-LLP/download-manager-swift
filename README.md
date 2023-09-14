@@ -95,7 +95,7 @@ To use the Media Management Library in your project, follow these steps:
 `playerManager.updateSeek(with: 0.5)`
 
 - Check if media is currently playing\
- `let isPlaying = playerManager.isPlay`
+ `let isPlaying = playerManager.isPlaying`
 
 - Access the total duration of the media\
  `let totalDuration = playerManager.totalDuration`
