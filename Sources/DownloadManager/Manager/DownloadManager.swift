@@ -12,49 +12,52 @@ public class DownloadManager: ObservableObject {
     
     //MARK: - properties
     let playerManager = PlayerManager()
-    private var downloadManager = DownloadTask()
+    private var downloadTask = DownloadTask()
+    var notificationMessage: NotificationMessage
+    private var audioName = ""
     @Published public var taskResult: TaskResult = .progress(0.0)
     
     //MARK: Initializer
-    public init() {
-        downloadManager.downloadAudioCallback = { [self] result in
+    public init(notificationMessage: NotificationMessage) {
+        self.notificationMessage = notificationMessage
+        downloadTask.downloadAudioCallback = { [self] result in
             DispatchQueue.main.async {
                 self.taskResult = result
+                self.callNotification(with: self.taskResult)
             }
         }
+        
     }
     
     //MARK: downloadAudio
     public func downloadMedia(with url: String, successTitle: String = "", successSubtitle: String = "") {
         if let mediaName = url.components(separatedBy: "/").last {
-            downloadManager.successNotificationTitle = successTitle.isEmpty ? notificationTitle : successTitle
-            downloadManager.successNotifcationSubtitle  = successSubtitle.isEmpty ? notificationDescription(mediaName) : successSubtitle
+            audioName = mediaName
         } else {
             debugPrint(kMediaNameError)
         }
-        downloadManager.downloadMedia(with: url)
+        downloadTask.downloadMedia(with: url)
     }
     
     //MARK: cancelDownload
     public func cancelDownload(with url : String, notificationTitle: String = "", notificationSubtitle: String = "") {
         if let mediaName = url.components(separatedBy: "/").last {
-            downloadManager.cancelNotificationTitle = notificationTitle.isEmpty ? cancelMediaTitle  : notificationTitle
-            downloadManager.cancelNotificationSubtitle = notificationSubtitle.isEmpty ? cancelMediaSubtitle(mediaName) : notificationSubtitle
+            audioName = mediaName
         } else {
             debugPrint(kMediaNameError)
         }
-        downloadManager.cancelMedia()
+        downloadTask.cancelMedia()
         
     }
     
     //MARK: - pauseDownload
     public func pauseDownload() {
-        downloadManager.pauseDownload()
+        downloadTask.pauseDownload()
     }
     
     //MARK: - resumeDownload
     public func resumeDownload() {
-        downloadManager.resumeDownload()
+        downloadTask.resumeDownload()
     }
     
     
@@ -71,7 +74,7 @@ public class DownloadManager: ObservableObject {
     
     //MARK: - removeMediaFromDir
     public func removeMediaFromDir(with url: String) {
-        downloadManager.removeMedia(with: url)
+        downloadTask.removeMedia(with: url)
     }
     
     //MARK: Config toggle LocalNotification
@@ -84,6 +87,39 @@ public class DownloadManager: ObservableObject {
     //Get notification status: is't enable or not?
     public func isNotificationEnable() -> Bool {
         return UserDefaults.standard.bool(forKey: localNotification)
+    }
+    
+    //MARK: callNotification
+    private func callNotification(with taskResultType: TaskResult) {
+        switch taskResultType {
+        case .downloaded:
+            triggerLocalNotification(title: notificationMessage.successNotificationTitle, subtitle: notificationMessage.successSubtitle(with: audioName))
+        case .progress:
+            break
+        case .failure(let message):
+            triggerLocalNotification(title: notificationMessage.failureNotificationTitle, subtitle: message)
+        case .cancel:
+            triggerLocalNotification(title: notificationMessage.cancelNotificationTitle, subtitle: notificationMessage.cancelSubtitle(with: audioName))
+        case .deleted:
+            break
+        }
+    }
+    
+}
+
+extension DownloadManager {
+    
+    //MARK: - triggerLocalNotification
+    func triggerLocalNotification(title: String, subtitle: String) {
+        if isNotificationEnable() {
+            let content = UNMutableNotificationContent()
+            content.title = title
+            content.subtitle = subtitle
+            content.sound = UNNotificationSound.default
+            let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 1, repeats: false)
+            let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: trigger)
+            UNUserNotificationCenter.current().add(request)
+        }
     }
     
 }

@@ -17,12 +17,7 @@ class DownloadTask: NSObject {
     var mediaURL = ""
     var mediaName = ""
     var downloadAudioCallback: ((TaskResult) -> Void)?
-    var successNotificationTitle = ""
-    var successNotifcationSubtitle = ""
-    var cancelNotificationTitle = ""
-    var cancelNotificationSubtitle = ""
     var resumeData: Data?
-    
     
     //MARK: Download Media
     func downloadMedia(with url: String) {
@@ -36,7 +31,6 @@ class DownloadTask: NSObject {
             dataTask?.resume()
         } else {
             downloadAudioCallback?(.failure(invalidURL))
-            triggerLocalNotification(title: failure, subtitle: invalidURL)
         }
     }
     
@@ -44,7 +38,6 @@ class DownloadTask: NSObject {
     func cancelMedia() {
         dataTask?.cancel()
         downloadAudioCallback?(.cancel)
-        triggerLocalNotification(title: cancelNotificationTitle, subtitle: cancelNotificationSubtitle)
     }
     
     //MARK: - pauseDownload
@@ -86,7 +79,6 @@ extension DownloadTask: URLSessionDownloadDelegate, URLSessionDelegate {
     
     func urlSession(_ session: URLSession, didBecomeInvalidWithError error: Error?) {
         downloadAudioCallback?(.failure(error?.localizedDescription ?? kNetwork))
-        triggerLocalNotification(title: failure, subtitle: (error?.localizedDescription ?? kNetwork))
     }
     
     func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?) {
@@ -99,13 +91,10 @@ extension DownloadTask: URLSessionDownloadDelegate, URLSessionDelegate {
                 case NSURLErrorNotConnectedToInternet:
                     // Handle no internet connection
                     downloadAudioCallback?(.failure(kNetwork))
-                    triggerLocalNotification(title: failure, subtitle: (kNetwork))
                 case NSURLErrorTimedOut:
                     downloadAudioCallback?(.failure(kRequestMsg))
-                    triggerLocalNotification(title: failure, subtitle: (kRequestMsg))
                 default:
                     downloadAudioCallback?(.failure(nsError.localizedDescription))
-                    triggerLocalNotification(title: failure, subtitle: (nsError.localizedDescription))
                 }
             }
         }
@@ -130,14 +119,12 @@ extension DownloadTask {
                 }
                 do {
                     try FileManager.default.moveItem(at: location, to: destinationUrl)
-                    triggerLocalNotification(title: successNotificationTitle, subtitle: successNotifcationSubtitle)
                     downloadAudioCallback?(.downloaded(destinationUrl))
                 } catch let error as NSError {
                     print(error.localizedDescription)
                 }
             } catch let error as NSError {
                 downloadAudioCallback?(.failure(dirErrorMsg(error.localizedDescription)))
-                triggerLocalNotification(title: failure, subtitle: dirErrorMsg(error.localizedDescription))
             }
         }
         
@@ -156,26 +143,4 @@ extension DownloadTask {
             }
         }
     }
-}
-
-
-extension DownloadTask {
-    
-    //MARK: - triggerLocalNotification
-    func triggerLocalNotification(title: String, subtitle: String) {
-        if isNotificationEnable() {
-            let content = UNMutableNotificationContent()
-            content.title = title
-            content.subtitle = subtitle
-            content.sound = UNNotificationSound.default
-            let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 1, repeats: false)
-            let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: trigger)
-            UNUserNotificationCenter.current().add(request)
-        }
-    }
-    
-    private func isNotificationEnable() -> Bool {
-        return UserDefaults.standard.bool(forKey: localNotification)
-    }
-    
 }

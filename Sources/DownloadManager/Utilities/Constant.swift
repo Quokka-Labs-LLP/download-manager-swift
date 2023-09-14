@@ -27,11 +27,11 @@ let screenHeightFactor = UIScreen.main.bounds.height / 568
 let screenWidthFactor = UIScreen.main.bounds.width / 320
 
 //MARK: Message
-let notificationTitle  = "Notification"
+let successMediaTitle  = "Notification"
 let cancelMediaTitle = "Notification"
-let failure = "Notification"
+let failureMediaTile = "Notification"
 
-var notificationDescription =  {(title: String) in
+var successMediaSubtitle =  {(title: String) in
     return "Downloaded \(title)"
 }
 
