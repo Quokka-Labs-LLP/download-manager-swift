@@ -38,25 +38,25 @@ public class PlayerManager: ObservableObject {
         }
     }
     
-    //MARK: Pause Audio
+    //MARK: - Pause Audio
     public func pauseAudio() {
         isPlaying = false
         player?.pause()
     }
     
-    // MARK: Resume Audio
+    // MARK: - Resume Audio
     public func resumeAudio() {
         player?.play()
         isPlaying = true
     }
     
-    //MARK: Remove Player Current Item
+    //MARK: - Remove Player Current Item
     public func deinitPlayer() {
         player?.replaceCurrentItem(with: nil)
         player = nil
     }
     
-    //MARK: - getMeidaPath
+    //MARK: - GetMeidaPath
     public func getMediaPath(of url : String) -> URL?  {
         if let searchPathDirectory = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true).first {
             let documentDirectory = URL(fileURLWithPath:searchPathDirectory)
@@ -72,7 +72,7 @@ public class PlayerManager: ObservableObject {
         return nil
     }
     
-    //MARK:  Play Video
+    //MARK: - Play Video
     public func playVideo(url: String) {
         if let urlPath = getMediaPath(of: url) {
             let videoAsset = AVURLAsset(url: urlPath, options: nil)
@@ -121,7 +121,7 @@ public class PlayerManager: ObservableObject {
         }
     }
     
-    //MARK: Change audio player seek with slider
+    //MARK: - Change audio player seek with slider
     public func updateSeek(with value: Double) {
         let selectedTime: CMTime = CMTimeMake(value: Int64(value * 1000 as Float64), timescale: 1000)
         player?.seek(to: selectedTime)

@@ -19,7 +19,7 @@ class DownloadTask: NSObject {
     var downloadAudioCallback: ((TaskResult) -> Void)?
     var resumeData: Data?
     
-    //MARK: Download Media
+    //MARK: - Download Media
     func downloadMedia(with url: String) {
         mediaURL = url
         mediaName = mediaURL.components(separatedBy: "/").last ?? ""
@@ -34,13 +34,13 @@ class DownloadTask: NSObject {
         }
     }
     
-    //MARK: Cancel Download Media
+    //MARK: - Cancel Media
     func cancelMedia() {
         dataTask?.cancel()
         downloadAudioCallback?(.cancel)
     }
     
-    //MARK: - pauseDownload
+    //MARK: - Pause Download
     func pauseDownload() {
         dataTask?.cancel { (data) in
             if let data = data {
@@ -49,7 +49,7 @@ class DownloadTask: NSObject {
         }
     }
     
-    //MARK: - pauseDownload
+    //MARK: - Resume Download
     func resumeDownload() {
         if let resumedData = resumeData {
             dataTask = session?.downloadTask(withResumeData: resumedData)
@@ -62,6 +62,7 @@ class DownloadTask: NSObject {
 
 //MARK: - URLSessionDownloadDelegate
 extension DownloadTask: URLSessionDownloadDelegate, URLSessionDelegate {
+    
     func urlSession(_ session: URLSession,
                     downloadTask: URLSessionDownloadTask,
                     didWriteData bytesWritten: Int64,
@@ -104,6 +105,7 @@ extension DownloadTask: URLSessionDownloadDelegate, URLSessionDelegate {
 extension DownloadTask {
     
     //MARK: -  Save Media File in DIR
+    /// Save the media in the document directory with media name and type
     func saveAudioPath(with location: URL) {
         if let searchPathDirectries = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true).first {
             let documentDirectory = URL(fileURLWithPath: searchPathDirectries)
@@ -131,6 +133,7 @@ extension DownloadTask {
     }
     
     //MARK: - Remove Media
+    /// Remove the media from the document directory with url 
     func removeMedia(with url: String) {
         if let searchPathDirectries = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true).first {
             let documentDirectory = URL(fileURLWithPath: searchPathDirectries)

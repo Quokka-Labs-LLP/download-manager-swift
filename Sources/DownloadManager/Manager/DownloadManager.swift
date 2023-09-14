@@ -10,7 +10,7 @@ import SwiftUI
 
 public class DownloadManager: ObservableObject {
     
-    //MARK: - properties
+    //MARK: - Properties
     let playerManager = PlayerManager()
     private var downloadTask = DownloadTask()
     var notificationMessage: NotificationMessage
@@ -26,11 +26,11 @@ public class DownloadManager: ObservableObject {
                 self.callNotification(with: self.taskResult)
             }
         }
-        
     }
     
-    //MARK: downloadAudio
-    public func downloadMedia(with url: String, successTitle: String = "", successSubtitle: String = "") {
+    //MARK: DownloadAudio
+    /// Download the media from the url
+    public func downloadMedia(with url: String) {
         if let mediaName = url.components(separatedBy: "/").last {
             audioName = mediaName
         } else {
@@ -39,52 +39,49 @@ public class DownloadManager: ObservableObject {
         downloadTask.downloadMedia(with: url)
     }
     
-    //MARK: cancelDownload
-    public func cancelDownload(with url : String, notificationTitle: String = "", notificationSubtitle: String = "") {
+    //MARK: CancelDownload
+    /// Cancel downloading task of media
+    public func cancelDownload(with url : String) {
         if let mediaName = url.components(separatedBy: "/").last {
             audioName = mediaName
         } else {
             debugPrint(kMediaNameError)
         }
         downloadTask.cancelMedia()
-        
     }
     
-    //MARK: - pauseDownload
+    //MARK: - PauseDownload
+    /// Pause downloading task of media
     public func pauseDownload() {
         downloadTask.pauseDownload()
     }
     
-    //MARK: - resumeDownload
+    //MARK: - ResumeDownload
+    ///Resume downloading task of media
     public func resumeDownload() {
         downloadTask.resumeDownload()
     }
     
-    
-    
-    //MARK: - isMediaExistInDir
-    // check media is already download or not
+    //MARK: - Is Media Exist In Directory
+    ///Check media is already download or not
     public func isMediaExistInDir(with url : String) -> Bool {
-        if (playerManager.getMediaPath(of: url) != nil) {
-            return true
-        } else {
-            return false
-        }
+        return (playerManager.getMediaPath(of: url) != nil) ? true : false
     }
     
-    //MARK: - removeMediaFromDir
+    //MARK: - Remove Media From Directory
+    ///Remove media from a document directory with the local url
     public func removeMediaFromDir(with url: String) {
         downloadTask.removeMedia(with: url)
     }
     
-    //MARK: Config toggle LocalNotification
-    // user can set the notification requirement
-    public func configNotification(isRequire: Bool) {
+    //MARK: LocalNotification Configuration
+    ///Local notification requirement will set with true or false
+    public func notificationConfiguration(isRequire: Bool) {
         UserDefaults.standard.set(isRequire, forKey: localNotification)
     }
     
     //MARK: isNotificationEnable
-    //Get notification status: is't enable or not?
+    ///Get notification status: is't enable or not?
     public func isNotificationEnable() -> Bool {
         return UserDefaults.standard.bool(forKey: localNotification)
     }
@@ -93,23 +90,26 @@ public class DownloadManager: ObservableObject {
     private func callNotification(with taskResultType: TaskResult) {
         switch taskResultType {
         case .downloaded:
+            /// call when download task is completed
             triggerLocalNotification(title: notificationMessage.successNotificationTitle, subtitle: notificationMessage.successSubtitle(with: audioName))
         case .progress:
             break
         case .failure(let message):
+            /// call when get an error during download task
             triggerLocalNotification(title: notificationMessage.failureNotificationTitle, subtitle: message)
         case .cancel:
+            /// call when cancel the downloading task
             triggerLocalNotification(title: notificationMessage.cancelNotificationTitle, subtitle: notificationMessage.cancelSubtitle(with: audioName))
         case .deleted:
             break
         }
     }
-    
 }
 
 extension DownloadManager {
     
-    //MARK: - triggerLocalNotification
+    //MARK: - TriggerLocalNotification
+    /// this is used for show notification in foreground or background during url session download task status
     func triggerLocalNotification(title: String, subtitle: String) {
         if isNotificationEnable() {
             let content = UNMutableNotificationContent()
