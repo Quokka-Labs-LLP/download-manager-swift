@@ -13,9 +13,9 @@ import AVKit
 public class PlayerManager: ObservableObject {
     
     //MARK: - Properties
-    @Published var isPlay: Bool = false
-    @Published var totalDuration: Double = 0.0
-    @Published var currentDuration: Double = 0.0
+    @Published public var isPlay: Bool = false
+    @Published public var totalDuration: Double = 0.0
+    @Published public var currentDuration: Double = 0.0
     public var audioTimeInterval: Float64 = 30
     
     
@@ -55,7 +55,7 @@ public class PlayerManager: ObservableObject {
     }
     
     //MARK: - getMeidaPath
-    func getMeidaPath(of url : String) -> URL?  {
+    public func getMeidaPath(of url : String) -> URL?  {
         if let searchPathDirectory = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true).first {
             let documentDirectory = URL(fileURLWithPath:searchPathDirectory)
             do {
