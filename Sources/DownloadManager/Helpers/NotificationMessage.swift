@@ -14,6 +14,7 @@ public struct NotificationMessage {
     var cancelNotificationSubtitle = ""
     var failureNotificationTitle = failureMediaTile
     
+    public init() {}
     func successSubtitle(with name: String) -> String {
         return successNotifcationSubtitle.isEmpty ? successMediaSubtitle(name) : successNotifcationSubtitle
     }
