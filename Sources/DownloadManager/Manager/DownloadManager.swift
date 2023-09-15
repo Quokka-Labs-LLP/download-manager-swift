@@ -11,15 +11,19 @@ import SwiftUI
 public class DownloadManager: ObservableObject {
     
     //MARK: - Properties
-    let playerManager = PlayerManager()
-    private var downloadTask = DownloadTask()
+    let playerManager: PlayerManager
+    private var downloadTask: DownloadTask
     var notificationMessage: NotificationMessage
+    var service = Services()
     private var audioName = ""
     @Published public var taskResult: TaskResult = .progress(0.0)
     
     //MARK: Initializer
+    /// It initializes the properties and sets up the download task callback.
     public init(notificationMessage: NotificationMessage) {
         self.notificationMessage = notificationMessage
+        self.downloadTask = service.getDownloadTask()
+        self.playerManager = service.getPlayerManager()
         downloadTask.downloadAudioCallback = { [self] result in
             DispatchQueue.main.async {
                 self.taskResult = result
