@@ -90,6 +90,12 @@ public class DownloadManager: ObservableObject {
         return UserDefaults.standard.bool(forKey: localNotification)
     }
     
+    //MARK: - Get Exist MediaPath
+    /// get the media path from the document directory
+    public func getExistMediaPath(with url : String) -> URL? {
+        return playerManager.getMediaPath(of: url)
+    }
+    
     //MARK: callNotification
     private func callNotification(with taskResultType: TaskResult) {
         switch taskResultType {
