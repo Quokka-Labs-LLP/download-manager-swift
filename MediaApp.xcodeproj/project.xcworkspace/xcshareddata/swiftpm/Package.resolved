@@ -1,0 +1,14 @@
+{
+  "pins" : [
+    {
+      "identity" : "download-manager-swift",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/Quokka-Labs-LLP/download-manager-swift.git",
+      "state" : {
+        "branch" : "feature-download-manager",
+        "revision" : "57cd0a65c58bbf89daed5aaa1779e0e37b9be342"
+      }
+    }
+  ],
+  "version" : 2
+}
